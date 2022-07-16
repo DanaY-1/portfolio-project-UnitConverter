@@ -1,4 +1,6 @@
 from tkinter import *
+import tkinter as tk
+from tkinter import scrolledtext
 from tkinter.ttk import *
 from tkinter import ttk
 
@@ -8,28 +10,40 @@ window.title("Unit of Measurement Converter")
 window.geometry('550x300')
 
 def help_screen():
+    # Help Window
+    window_help = tk.Tk()
+    window_help.title("Unit of Measurement Converter - Help")
+    txt = tk.Text(window_help, width=125, height=25)
+    scroll = tk.Scrollbar(window_help)
+    txt.configure(yscrollcommand=scroll.set)
+    txt.pack(side=tk.LEFT)
+    scroll.config(command=txt.yview)
+    scroll.pack(side=tk.RIGHT, fill=tk.Y)
+
     # Welcome Message
-    print("Welcome to the Unit of Measurement Converter tool!")
-    print("")
-    print("You can use this tool to easily convert units of measurement. A one-stop shop for unit conversions!")
-    print("")
-    # New features
-    print("New features:")
-    print("Temperature and Pressure conversion.")
-    print("")
+    insert_text = """
+    Welcome to the Unit of Measurement Converter tool!
+    
+    You can use this tool to easily convert units of measurement. A one-stop shop for unit conversions!
+    
+    New features:
+    Temperature and Pressure conversion.
 
-    # How to Use
-    print("How to Use:")
-    print("1. Select the tab of the type of units you wish to convert.")
-    print("2. Enter the value you wish to convert, and select the units you wish to convert from and to.")
-    print("3. Select the Calculate button to produce the converted results.")
-    print("4. The results will show up in the command line interface along with the equation which was used to do the conversion.")
-    print("5. After any calculation, you may enter a new value and units and the calculate button will generate new results.")
-    print("")
+    How to Use:
+    1. Select the tab of the type of units you wish to convert.
+    2. Enter the value you wish to convert, and select the units you wish to convert from and to.
+    3. Select the Calculate button to produce the converted results.
+    4. The results will show up in the command line interface along with the equation which was used to do the conversion.
+    5. After any calculation, you may enter a new value and units and the calculate button will generate new results.
 
-    # Contact
-    print("Can't find what you're looking for?")
-    print("Email your question/suggestion to the developer: osustudent@oregonstate.edu\n")
+    Can't find what you're looking for?
+    Email your question/suggestion to the developer: osustudent@oregonstate.edu
+
+
+
+    """
+    txt.insert(INSERT, insert_text)
+    window_help.mainloop()
 
 def calculate_temp():
     try:
