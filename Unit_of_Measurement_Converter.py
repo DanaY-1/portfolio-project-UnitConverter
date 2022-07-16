@@ -41,23 +41,21 @@ def calculate_temp():
     to_units = temp_box_value2.get()
 
     if from_units == "C" and to_units == "F":
-        print("Equation: F = (C x 9/5) + 32")
-        print("Results:")
         result = round((val * (9/5)) + 32, 1)
-        print(str(val) + " C = " + str(result) + " F\n")
-
+        temp_equation.set("Equation: F = (C x 9/5) + 32")
+        temp_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
     elif from_units == "F" and to_units == "C":
-        print("Equation: C = (F - 32) x (5/9)")
-        print("Results:")
         result = round((val - 32) * (5/9), 1)
-        print(str(val) + " F = " + str(result) + " C\n")
+        temp_equation.set("Equation: C = (F - 32) x (5/9)")
+        temp_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
     elif from_units == to_units:
-        print("Results:")
-        print(str(val) + " " + from_units + " = " + str(val) + " " + to_units)
+        temp_equation.set("")
+        temp_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(val) + " "  + to_units)
     else:
-        print("Error")
+        temp_equation.set("")
+        temp_results.set("Error")
 
-    print("Enter new data and select Calculate to convert.\n")
+    #print("Enter new data and select Calculate to convert.\n")
 
 def calculate_press():
     try:
@@ -69,23 +67,21 @@ def calculate_press():
     to_units = press_box_value2.get()
 
     if from_units == "mbar" and to_units == "psi":
-        print("Equation: psi = mbar x 0.0145037738")
-        print("Results:")
         result = round((val*0.0145037738), 1)
-        print(str(val) + " mbar = " + str(result) + " psi\n")
-
+        press_equation.set("Equation: psi = mbar x 0.0145037738")
+        press_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
     elif from_units == "psi" and to_units == "mbar":
-        print("Equation: mbar = psi * 68.9475729318")
-        print("Results:")
         result = round(val * 68.9475729318, 1)
-        print (str(val) + " psi = " + str(result) + " mbar\n")
+        press_equation.set("Equation: mbar = psi * 68.9475729318")
+        press_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
     elif from_units == to_units:
-        print("Results:")
-        print(str(val) + " " + from_units + " = " + str(val) + " " + to_units)
+        press_equation.set("")
+        press_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(val) + " "  + to_units)
     else:
-        print("Error")
+        press_equation.set("")
+        press_results.set("Error")
 
-    print("Enter new data and select Calculate to convert.\n")
+    #print("Enter new data and select Calculate to convert.\n")
 
 
 tab_control = ttk.Notebook(window)
@@ -97,8 +93,6 @@ lbl_home = Label(tab_home, text="Select the tab for the type of units you wish t
 lbl_home.place(relx=0.05, rely=0.3, anchor='nw')
 lbl_home2 = Label(tab_home, text="You can use this tool to easily convert units of measurement.")
 lbl_home2.place(relx=0.05, rely=0.1, anchor='nw')
-lbl_home3 = Label(tab_home, text="Results and output are provided through the command line interface. ")
-lbl_home3.place(relx=0.05, rely=0.8, anchor='nw')
 help_btn = Button(tab_home, text="Help", command=help_screen)
 help_btn.place(relx=1.0, rely=1.0, x=0, y=0, anchor='se')
 
@@ -130,6 +124,14 @@ temp_combo2.place(relx=0.35, rely=0.2, anchor='nw')
 temp_calc_btn = Button(tab_temp, text="Calculate", command=calculate_temp)
 temp_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
 
+temp_results = StringVar()
+temp_results.set("")
+temp_equation = StringVar()
+temp_equation.set("")
+lbl_tempresults = Label(tab_temp, textvariable=temp_results, justify='center')
+lbl_tempresults.place(relx=0.2, rely=0.7, anchor='nw')
+lbl_temp_eq = Label(tab_temp, textvariable=temp_equation, justify='center')
+lbl_temp_eq.place(relx=0.2, rely=0.5, anchor='nw')
 
 # pressure
 tab_press = ttk.Frame(tab_control)
@@ -158,6 +160,15 @@ press_combo2.place(relx=0.35, rely=0.2, anchor='nw')
 
 press_calc_btn = Button(tab_press, text="Calculate", command=calculate_press)
 press_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
+
+press_results = StringVar()
+press_results.set("")
+press_equation = StringVar()
+press_equation.set("")
+lbl_pressresults = Label(tab_press, textvariable=press_results, justify='center')
+lbl_pressresults.place(relx=0.2, rely=0.7, anchor='nw')
+lbl_press_eq = Label(tab_press, textvariable=press_equation, justify='center')
+lbl_press_eq.place(relx=0.2, rely=0.5, anchor='nw')
 
 
 
