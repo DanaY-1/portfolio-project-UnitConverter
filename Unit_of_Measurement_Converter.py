@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import scrolledtext
 from tkinter.ttk import *
 from tkinter import ttk
+import socket
+import json
 
 window = Tk()
 
@@ -97,6 +99,36 @@ def calculate_press():
 
     #print("Enter new data and select Calculate to convert.\n")
 
+def calculate_currency():
+    try:
+        val = float(currency_input.get())
+    except:
+        print("Enter a number to convert.")
+        return
+    
+    # set up communication via socket
+    Host = '127.0.0.1'
+    Port = 1080
+
+    #connect to server
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect((Host, Port))
+    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    print("Connected to: ", Host, Port)
+
+    from_units = currency_box_value1.get()
+    to_units = currency_box_value2.get()
+
+    data = json.dumps({"base_currency": from_units, "des_currency": to_units, "amount_to_convert": val})
+    client.send(data.encode())
+
+    while True:
+        recvData = client.recv(4098)
+        result = recvData.decode()
+        currency_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        print(recvData.decode('utf-8'))
+        break
+
 
 tab_control = ttk.Notebook(window)
 
@@ -183,6 +215,43 @@ lbl_pressresults = Label(tab_press, textvariable=press_results, justify='center'
 lbl_pressresults.place(relx=0.2, rely=0.7, anchor='nw')
 lbl_press_eq = Label(tab_press, textvariable=press_equation, justify='center')
 lbl_press_eq.place(relx=0.2, rely=0.5, anchor='nw')
+
+# currency
+tab_currency = ttk.Frame(tab_control)
+tab_control.add(tab_currency, text='Currency')
+lbl_currency = Label(tab_currency, text='Convert Currency', justify='center')
+lbl_currency.pack(side='top')
+lbl_currencyto = Label(tab_currency, text='to', justify='center')
+lbl_currencyto.place(relx=0.3, rely=0.2, anchor='nw')
+
+currency_input = Entry(tab_currency,width=10)
+currency_input.place(relx=0.05, rely=0.2, anchor='nw')
+
+currency_box_value1 = StringVar()
+currency_combo1 = Combobox(tab_currency, textvariable=currency_box_value1, width=5)
+currency_combo1['values'] = ("USD","EUR","GBP","CAD","JPY","MXN","CHF","AMD","AUD","BRL")
+currency_combo1.bind('<<ComboboxSelected>>')
+currency_combo1.current(0)    #set the selected item
+currency_combo1.place(relx=0.2, rely=0.2, anchor='nw')
+
+currency_box_value2 = StringVar()
+currency_combo2 = Combobox(tab_currency, textvariable=currency_box_value2, width=5)
+currency_combo2['values'] = ("USD","EUR","GBP","CAD","JPY","MXN","CHF","AMD","AUD","BRL")
+currency_combo2.bind('<<ComboboxSelected>>')
+currency_combo2.current(1)    #set the selected item
+currency_combo2.place(relx=0.35, rely=0.2, anchor='nw')
+
+currency_calc_btn = Button(tab_currency, text="Calculate", command=calculate_currency)
+currency_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
+
+currency_results = StringVar()
+currency_results.set("")
+currency_equation = StringVar()
+currency_equation.set("")
+lbl_currencyresults = Label(tab_currency, textvariable=currency_results, justify='center')
+lbl_currencyresults.place(relx=0.2, rely=0.7, anchor='nw')
+lbl_currency_eq = Label(tab_currency, textvariable=currency_equation, justify='center')
+lbl_currency_eq.place(relx=0.2, rely=0.5, anchor='nw')
 
 
 
