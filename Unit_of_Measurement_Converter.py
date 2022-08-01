@@ -129,6 +129,32 @@ def calculate_currency():
         print(recvData.decode('utf-8'))
         break
 
+def getTempData():
+    state = state_combo.get()
+
+    # set up communication via socket
+    Host = '127.0.0.1'
+    Port = 5050
+
+    #connect to server
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect((Host, Port))
+    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    print("Connected to: ", Host, Port)
+
+    data = state
+
+    client.send(data.encode())
+
+    while True:
+        recvData = client.recv(2048)
+        result = recvData.decode()
+        tempData = str(result)
+        tempData_entry.delete(0, tk.END)
+        tempData_entry.insert(0, tempData)
+        print(recvData.decode('utf-8'))
+        break
+    
 
 tab_control = ttk.Notebook(window)
 
@@ -178,6 +204,25 @@ lbl_tempresults = Label(tab_temp, textvariable=temp_results, justify='center')
 lbl_tempresults.place(relx=0.2, rely=0.7, anchor='nw')
 lbl_temp_eq = Label(tab_temp, textvariable=temp_equation, justify='center')
 lbl_temp_eq.place(relx=0.2, rely=0.5, anchor='nw')
+
+# temperature data
+lbl_tempData = Label(tab_temp, text='High Temperature Data (F)', justify='center')
+lbl_tempData.place(relx=0.65, rely=0.4, anchor='nw')
+
+state_box = StringVar()
+state_combo = Combobox(tab_temp, textvariable=state_box, width=11)
+state_combo['values'] = ("Alaska","Arizona","California","Colorado","Florida","Hawaii","Illinois","Maine","Montana","Nevada","New York","Oregon","Texas","Washington")
+state_combo.bind('<<ComboboxSelected>>')
+state_combo.current(0)  #set the selected item
+state_combo.place(relx=0.58, rely=0.5, anchor='nw')
+
+tempData_entry = tk.Entry(tab_temp, width=8)
+tempData_entry.place(relx=0.75, rely=0.5, anchor='nw')
+tempData = ""
+tempData_entry.insert(0, tempData)
+
+temp_data_btn = Button(tab_temp, text="Get Data", command=getTempData, width=9)
+temp_data_btn.place(relx=0.85, rely=0.5, anchor='nw')
 
 # pressure
 tab_press = ttk.Frame(tab_control)
