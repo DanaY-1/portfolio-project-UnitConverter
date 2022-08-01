@@ -154,6 +154,10 @@ def getTempData():
         tempData_entry.insert(0, tempData)
         print(recvData.decode('utf-8'))
         break
+
+    # close connection
+    data = "!DISCONNECT"
+    client.send(data.encode())
     
 
 tab_control = ttk.Notebook(window)
