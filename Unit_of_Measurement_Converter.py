@@ -130,18 +130,30 @@ def calculate_flow():
 
     if from_units == "lbs/sec" and to_units == "lbs/min":
         result = round((val*60), 1)
-        flow_equation.set("Equation: lbs/min = lbs/sec x 60")
-        flow_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        flow_equation_title.set("Equation:")
+        flow_equation.set("lbs/min = (lbs/sec) x 60")
+        output = str(result) + " " + to_units
+        flowresults_entry.delete(0, tk.END)
+        flowresults_entry.insert(0, output)
     elif from_units == "lbs/min" and to_units == "lbs/sec":
         result = round(val / 60, 1)
-        flow_equation.set("Equation: lbs/sec = (lbs/min) / 60")
-        flow_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        flow_equation_title.set("Equation:")
+        flow_equation.set("lbs/sec = (lbs/min) / 60")
+        output = str(result) + " " + to_units
+        flowresults_entry.delete(0, tk.END)
+        flowresults_entry.insert(0, output)
     elif from_units == to_units:
+        flow_equation_title.set("")
         flow_equation.set("")
-        flow_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(val) + " "  + to_units)
+        output = str(val) + " " + to_units
+        flowresults_entry.delete(0, tk.END)
+        flowresults_entry.insert(0, output)
     else:
+        flow_equation_title.set("")
         flow_equation.set("")
-        flow_results.set("Error")
+        output = "Error"
+        flowresults_entry.delete(0, tk.END)
+        flowresults_entry.insert(0, output)
 
 def calculate_speed():
     try:
@@ -284,7 +296,7 @@ lbl_temp_eq_title.place(relx=0.4, rely=0.5, anchor='nw')
 temp_equation = StringVar()
 temp_equation.set("")
 lbl_temp_eq = Label(tab_temp, textvariable=temp_equation, font=("Calibri", 12), justify='center')
-lbl_temp_eq.place(relx=0.36, rely=0.6, anchor='nw')
+lbl_temp_eq.place(relx=0.47, rely=0.6, anchor='n')
 
 
 # temperature data
@@ -350,44 +362,53 @@ lbl_press_eq_title.place(relx=0.4, rely=0.5, anchor='nw')
 press_equation = StringVar()
 press_equation.set("")
 lbl_press_eq = Label(tab_press, textvariable=press_equation, font=("Calibri", 12), justify='center')
-lbl_press_eq.place(relx=0.3, rely=0.6, anchor='nw')
+lbl_press_eq.place(relx=0.47, rely=0.6, anchor='n')
 
 # flow rate
 tab_flow = ttk.Frame(tab_control)
 tab_control.add(tab_flow, text='Flow Rate')
 lbl_flow = Label(tab_flow, text='Convert Flow Rate Units', font=20, justify='center')
 lbl_flow.pack(side='top')
-lbl_flowto = Label(tab_flow, text='to', justify='center')
-lbl_flowto.place(relx=0.35, rely=0.2, anchor='nw')
+lbl_flowto = Label(tab_flow, text='to', font=("Calibri", 12), justify='center')
+lbl_flowto.place(relx=0.43, rely=0.2, anchor='nw')
 
 flow_input = Entry(tab_flow,width=10)
-flow_input.place(relx=0.05, rely=0.2, anchor='nw')
+flow_input.place(relx=0.15, rely=0.2, anchor='nw')
 
 flow_box_value1 = StringVar()
 flow_combo1 = Combobox(tab_flow, textvariable=flow_box_value1, width=7)
 flow_combo1['values'] = ("lbs/sec","lbs/min")
 flow_combo1.bind('<<ComboboxSelected>>')
 flow_combo1.current(0)    #set the selected item
-flow_combo1.place(relx=0.2, rely=0.2, anchor='nw')
+flow_combo1.place(relx=0.3, rely=0.2, anchor='nw')
 
 flow_box_value2 = StringVar()
 flow_combo2 = Combobox(tab_flow, textvariable=flow_box_value2, width=7)
 flow_combo2['values'] = ("lbs/sec","lbs/min")
 flow_combo2.bind('<<ComboboxSelected>>')
 flow_combo2.current(1)    #set the selected item
-flow_combo2.place(relx=0.4, rely=0.2, anchor='nw')
+flow_combo2.place(relx=0.47, rely=0.2, anchor='nw')
+
+lbl_floweq = Label(tab_flow, text='=', font=("Calibri", 12), justify='center')
+lbl_floweq.place(relx=0.6, rely=0.2, anchor='nw')
 
 flow_calc_btn = Button(tab_flow, text="Calculate", command=calculate_flow)
-flow_calc_btn.place(relx=0.55, rely=0.2, anchor='nw')
+flow_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
-flow_results = StringVar()
-flow_results.set("")
+flowresults_entry = tk.Entry(tab_flow, width=13)
+flowresults_entry.place(relx=0.64, rely=0.2, anchor='nw')
+flowresults = ""
+flowresults_entry.insert(0, flowresults)
+
+flow_equation_title = StringVar()
+flow_equation_title.set("")
+lbl_flow_eq_title = Label(tab_flow, textvariable=flow_equation_title, font=("Calibri", 14), justify='center')
+lbl_flow_eq_title.place(relx=0.4, rely=0.5, anchor='nw')
+
 flow_equation = StringVar()
 flow_equation.set("")
-lbl_flowresults = Label(tab_flow, textvariable=flow_results, justify='center')
-lbl_flowresults.place(relx=0.2, rely=0.7, anchor='nw')
-lbl_flow_eq = Label(tab_flow, textvariable=flow_equation, justify='center')
-lbl_flow_eq.place(relx=0.2, rely=0.5, anchor='nw')
+lbl_flow_eq = Label(tab_flow, textvariable=flow_equation, font=("Calibri", 12), justify='center')
+lbl_flow_eq.place(relx=0.47, rely=0.6, anchor='n')
 
 # speed
 tab_speed = ttk.Frame(tab_control)
