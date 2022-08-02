@@ -94,18 +94,30 @@ def calculate_press():
 
     if from_units == "mbar" and to_units == "psi":
         result = round((val*0.0145037738), 1)
-        press_equation.set("Equation: psi = mbar x 0.0145037738")
-        press_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        press_equation_title.set("Equation:")
+        press_equation.set("psi = mbar x 0.0145037738")
+        output = str(result) + " " + to_units
+        pressresults_entry.delete(0, tk.END)
+        pressresults_entry.insert(0, output)
     elif from_units == "psi" and to_units == "mbar":
         result = round(val * 68.9475729318, 1)
-        press_equation.set("Equation: mbar = psi * 68.9475729318")
-        press_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        press_equation_title.set("Equation:")
+        press_equation.set("mbar = psi * 68.9475729318")
+        output = str(result) + " " + to_units
+        pressresults_entry.delete(0, tk.END)
+        pressresults_entry.insert(0, output)
     elif from_units == to_units:
+        press_equation_title.set("")
         press_equation.set("")
-        press_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(val) + " "  + to_units)
+        output = str(val) + " " + to_units
+        pressresults_entry.delete(0, tk.END)
+        pressresults_entry.insert(0, output)
     else:
+        press_equation_title.set("")
         press_equation.set("")
-        press_results.set("Error")
+        output = "Error"
+        pressresults_entry.delete(0, tk.END)
+        pressresults_entry.insert(0, output)
 
 def calculate_flow():
     try:
@@ -299,37 +311,46 @@ tab_press = ttk.Frame(tab_control)
 tab_control.add(tab_press, text='Pressure')
 lbl_press = Label(tab_press, text='Convert Pressure Units', font=20, justify='center')
 lbl_press.pack(side='top')
-lbl_pressto = Label(tab_press, text='to', justify='center')
-lbl_pressto.place(relx=0.3, rely=0.2, anchor='nw')
+lbl_pressto = Label(tab_press, text='to', font=("Calibri", 12), justify='center')
+lbl_pressto.place(relx=0.41, rely=0.2, anchor='nw')
 
 press_input = Entry(tab_press,width=10)
-press_input.place(relx=0.05, rely=0.2, anchor='nw')
+press_input.place(relx=0.15, rely=0.2, anchor='nw')
 
 press_box_value1 = StringVar()
 press_combo1 = Combobox(tab_press, textvariable=press_box_value1, width=5)
 press_combo1['values'] = ("mbar","psi")
 press_combo1.bind('<<ComboboxSelected>>')
 press_combo1.current(0)    #set the selected item
-press_combo1.place(relx=0.2, rely=0.2, anchor='nw')
+press_combo1.place(relx=0.3, rely=0.2, anchor='nw')
 
 press_box_value2 = StringVar()
 press_combo2 = Combobox(tab_press, textvariable=press_box_value2, width=5)
 press_combo2['values'] = ("mbar","psi")
 press_combo2.bind('<<ComboboxSelected>>')
 press_combo2.current(1)    #set the selected item
-press_combo2.place(relx=0.35, rely=0.2, anchor='nw')
+press_combo2.place(relx=0.45, rely=0.2, anchor='nw')
+
+lbl_presseq = Label(tab_press, text='=', font=("Calibri", 12), justify='center')
+lbl_presseq.place(relx=0.56, rely=0.2, anchor='nw')
 
 press_calc_btn = Button(tab_press, text="Calculate", command=calculate_press)
-press_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
+press_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
-press_results = StringVar()
-press_results.set("")
+pressresults_entry = tk.Entry(tab_press, width=13)
+pressresults_entry.place(relx=0.62, rely=0.2, anchor='nw')
+pressresults = ""
+pressresults_entry.insert(0, pressresults)
+
+press_equation_title = StringVar()
+press_equation_title.set("")
+lbl_press_eq_title = Label(tab_press, textvariable=press_equation_title, font=("Calibri", 14), justify='center')
+lbl_press_eq_title.place(relx=0.4, rely=0.5, anchor='nw')
+
 press_equation = StringVar()
 press_equation.set("")
-lbl_pressresults = Label(tab_press, textvariable=press_results, justify='center')
-lbl_pressresults.place(relx=0.2, rely=0.7, anchor='nw')
-lbl_press_eq = Label(tab_press, textvariable=press_equation, justify='center')
-lbl_press_eq.place(relx=0.2, rely=0.5, anchor='nw')
+lbl_press_eq = Label(tab_press, textvariable=press_equation, font=("Calibri", 12), justify='center')
+lbl_press_eq.place(relx=0.3, rely=0.6, anchor='nw')
 
 # flow rate
 tab_flow = ttk.Frame(tab_control)
