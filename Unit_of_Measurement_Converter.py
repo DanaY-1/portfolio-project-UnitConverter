@@ -123,6 +123,30 @@ def calculate_flow():
         flow_equation.set("")
         flow_results.set("Error")
 
+def calculate_speed():
+    try:
+        val = float(speed_input.get())
+    except:
+        print("Enter a number to convert.")
+        return
+    from_units = speed_box_value1.get()
+    to_units = speed_box_value2.get()
+
+    if from_units == "knots" and to_units == "mph":
+        result = round((val*1.15077945), 1)
+        speed_equation.set("Equation: mph = knots x 1.15077945")
+        speed_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+    elif from_units == "mph" and to_units == "knots":
+        result = round(val / 1.15077945, 1)
+        speed_equation.set("Equation: knots = mph / 1.15077945")
+        speed_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+    elif from_units == to_units:
+        flow_equation.set("")
+        flow_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(val) + " "  + to_units)
+    else:
+        flow_equation.set("")
+        flow_results.set("Error")
+
 def calculate_currency():
     try:
         val = float(currency_input.get())
@@ -325,6 +349,43 @@ lbl_flowresults = Label(tab_flow, textvariable=flow_results, justify='center')
 lbl_flowresults.place(relx=0.2, rely=0.7, anchor='nw')
 lbl_flow_eq = Label(tab_flow, textvariable=flow_equation, justify='center')
 lbl_flow_eq.place(relx=0.2, rely=0.5, anchor='nw')
+
+# speed
+tab_speed = ttk.Frame(tab_control)
+tab_control.add(tab_speed, text='Speed')
+lbl_speed = Label(tab_speed, text='Convert Speed Units', justify='center')
+lbl_speed.pack(side='top')
+lbl_speedto = Label(tab_speed, text='to', justify='center')
+lbl_speedto.place(relx=0.3, rely=0.2, anchor='nw')
+
+speed_input = Entry(tab_speed,width=10)
+speed_input.place(relx=0.05, rely=0.2, anchor='nw')
+
+speed_box_value1 = StringVar()
+speed_combo1 = Combobox(tab_speed, textvariable=speed_box_value1, width=5)
+speed_combo1['values'] = ("knots","mph")
+speed_combo1.bind('<<ComboboxSelected>>')
+speed_combo1.current(0)    #set the selected item
+speed_combo1.place(relx=0.2, rely=0.2, anchor='nw')
+
+speed_box_value2 = StringVar()
+speed_combo2 = Combobox(tab_speed, textvariable=speed_box_value2, width=5)
+speed_combo2['values'] = ("knots","mph")
+speed_combo2.bind('<<ComboboxSelected>>')
+speed_combo2.current(1)    #set the selected item
+speed_combo2.place(relx=0.35, rely=0.2, anchor='nw')
+
+speed_calc_btn = Button(tab_speed, text="Calculate", command=calculate_speed)
+speed_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
+
+speed_results = StringVar()
+speed_results.set("")
+speed_equation = StringVar()
+speed_equation.set("")
+lbl_speedresults = Label(tab_speed, textvariable=speed_results, justify='center')
+lbl_speedresults.place(relx=0.2, rely=0.7, anchor='nw')
+lbl_speed_eq = Label(tab_speed, textvariable=speed_equation, justify='center')
+lbl_speed_eq.place(relx=0.2, rely=0.5, anchor='nw')
 
 # currency
 tab_currency = ttk.Frame(tab_control)
