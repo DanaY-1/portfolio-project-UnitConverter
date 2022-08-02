@@ -108,14 +108,38 @@ def calculate_flow():
     from_units = flow_box_value1.get()
     to_units = flow_box_value2.get()
 
-    if from_units == "lbs/s" and to_units == "lbs/min":
+    if from_units == "lbs/sec" and to_units == "lbs/min":
         result = round((val*60), 1)
-        flow_equation.set("Equation: lbs/min = lbs/s x 60")
+        flow_equation.set("Equation: lbs/min = lbs/sec x 60")
         flow_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
-    elif from_units == "lbs/min" and to_units == "lbs/s":
+    elif from_units == "lbs/min" and to_units == "lbs/sec":
         result = round(val / 60, 1)
-        flow_equation.set("Equation: lbs/s = (lbs/min) / 60")
+        flow_equation.set("Equation: lbs/sec = (lbs/min) / 60")
         flow_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+    elif from_units == to_units:
+        flow_equation.set("")
+        flow_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(val) + " "  + to_units)
+    else:
+        flow_equation.set("")
+        flow_results.set("Error")
+
+def calculate_speed():
+    try:
+        val = float(speed_input.get())
+    except:
+        print("Enter a number to convert.")
+        return
+    from_units = speed_box_value1.get()
+    to_units = speed_box_value2.get()
+
+    if from_units == "knots" and to_units == "mph":
+        result = round((val*1.15077945), 1)
+        speed_equation.set("Equation: mph = knots x 1.15077945")
+        speed_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+    elif from_units == "mph" and to_units == "knots":
+        result = round(val / 1.15077945, 1)
+        speed_equation.set("Equation: knots = mph / 1.15077945")
+        speed_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
     elif from_units == to_units:
         flow_equation.set("")
         flow_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(val) + " "  + to_units)
@@ -295,27 +319,27 @@ tab_control.add(tab_flow, text='Flow Rate')
 lbl_flow = Label(tab_flow, text='Convert Flow Rate Units', justify='center')
 lbl_flow.pack(side='top')
 lbl_flowto = Label(tab_flow, text='to', justify='center')
-lbl_flowto.place(relx=0.3, rely=0.2, anchor='nw')
+lbl_flowto.place(relx=0.35, rely=0.2, anchor='nw')
 
 flow_input = Entry(tab_flow,width=10)
 flow_input.place(relx=0.05, rely=0.2, anchor='nw')
 
 flow_box_value1 = StringVar()
-flow_combo1 = Combobox(tab_flow, textvariable=flow_box_value1, width=5)
-flow_combo1['values'] = ("lbs/s","lbs/min")
+flow_combo1 = Combobox(tab_flow, textvariable=flow_box_value1, width=7)
+flow_combo1['values'] = ("lbs/sec","lbs/min")
 flow_combo1.bind('<<ComboboxSelected>>')
 flow_combo1.current(0)    #set the selected item
 flow_combo1.place(relx=0.2, rely=0.2, anchor='nw')
 
 flow_box_value2 = StringVar()
-flow_combo2 = Combobox(tab_flow, textvariable=flow_box_value2, width=5)
-flow_combo2['values'] = ("lbs/s","lbs/min")
+flow_combo2 = Combobox(tab_flow, textvariable=flow_box_value2, width=7)
+flow_combo2['values'] = ("lbs/sec","lbs/min")
 flow_combo2.bind('<<ComboboxSelected>>')
 flow_combo2.current(1)    #set the selected item
-flow_combo2.place(relx=0.35, rely=0.2, anchor='nw')
+flow_combo2.place(relx=0.4, rely=0.2, anchor='nw')
 
 flow_calc_btn = Button(tab_flow, text="Calculate", command=calculate_flow)
-flow_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
+flow_calc_btn.place(relx=0.55, rely=0.2, anchor='nw')
 
 flow_results = StringVar()
 flow_results.set("")
@@ -325,6 +349,43 @@ lbl_flowresults = Label(tab_flow, textvariable=flow_results, justify='center')
 lbl_flowresults.place(relx=0.2, rely=0.7, anchor='nw')
 lbl_flow_eq = Label(tab_flow, textvariable=flow_equation, justify='center')
 lbl_flow_eq.place(relx=0.2, rely=0.5, anchor='nw')
+
+# speed
+tab_speed = ttk.Frame(tab_control)
+tab_control.add(tab_speed, text='Speed')
+lbl_speed = Label(tab_speed, text='Convert Speed Units', justify='center')
+lbl_speed.pack(side='top')
+lbl_speedto = Label(tab_speed, text='to', justify='center')
+lbl_speedto.place(relx=0.3, rely=0.2, anchor='nw')
+
+speed_input = Entry(tab_speed,width=10)
+speed_input.place(relx=0.05, rely=0.2, anchor='nw')
+
+speed_box_value1 = StringVar()
+speed_combo1 = Combobox(tab_speed, textvariable=speed_box_value1, width=5)
+speed_combo1['values'] = ("knots","mph")
+speed_combo1.bind('<<ComboboxSelected>>')
+speed_combo1.current(0)    #set the selected item
+speed_combo1.place(relx=0.2, rely=0.2, anchor='nw')
+
+speed_box_value2 = StringVar()
+speed_combo2 = Combobox(tab_speed, textvariable=speed_box_value2, width=5)
+speed_combo2['values'] = ("knots","mph")
+speed_combo2.bind('<<ComboboxSelected>>')
+speed_combo2.current(1)    #set the selected item
+speed_combo2.place(relx=0.35, rely=0.2, anchor='nw')
+
+speed_calc_btn = Button(tab_speed, text="Calculate", command=calculate_speed)
+speed_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
+
+speed_results = StringVar()
+speed_results.set("")
+speed_equation = StringVar()
+speed_equation.set("")
+lbl_speedresults = Label(tab_speed, textvariable=speed_results, justify='center')
+lbl_speedresults.place(relx=0.2, rely=0.7, anchor='nw')
+lbl_speed_eq = Label(tab_speed, textvariable=speed_equation, justify='center')
+lbl_speed_eq.place(relx=0.2, rely=0.5, anchor='nw')
 
 # currency
 tab_currency = ttk.Frame(tab_control)
