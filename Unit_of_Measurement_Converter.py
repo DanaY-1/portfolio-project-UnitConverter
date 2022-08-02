@@ -58,20 +58,30 @@ def calculate_temp():
 
     if from_units == "C" and to_units == "F":
         result = round((val * (9/5)) + 32, 1)
-        temp_equation.set("Equation: F = (C x 9/5) + 32")
-        temp_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        temp_equation_title.set("Equation:")
+        temp_equation.set("F = (C x 9/5) + 32")
+        output = str(result) + " " + to_units
+        tempresults_entry.delete(0, tk.END)
+        tempresults_entry.insert(0, output)
     elif from_units == "F" and to_units == "C":
         result = round((val - 32) * (5/9), 1)
-        temp_equation.set("Equation: C = (F - 32) x (5/9)")
-        temp_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        temp_equation_title.set("Equation:")
+        temp_equation.set("C = (F - 32) x (5/9)")
+        output = str(result) + " " + to_units
+        tempresults_entry.delete(0, tk.END)
+        tempresults_entry.insert(0, output)
     elif from_units == to_units:
+        temp_equation_title.set("")
         temp_equation.set("")
-        temp_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(val) + " "  + to_units)
+        output = str(val) + " " + to_units
+        tempresults_entry.delete(0, tk.END)
+        tempresults_entry.insert(0, output)
     else:
+        temp_equation_title.set("")
         temp_equation.set("")
-        temp_results.set("Error")
-
-    #print("Enter new data and select Calculate to convert.\n")
+        output = "Error"
+        tempresults_entry.delete(0, tk.END)
+        tempresults_entry.insert(0, output)
 
 def calculate_press():
     try:
@@ -96,8 +106,6 @@ def calculate_press():
     else:
         press_equation.set("")
         press_results.set("Error")
-
-    #print("Enter new data and select Calculate to convert.\n")
 
 def calculate_flow():
     try:
@@ -225,56 +233,66 @@ tab_temp = ttk.Frame(tab_control)
 tab_control.add(tab_temp, text='Temperature')
 lbl_temp = Label(tab_temp, text='Convert Temperature Units', font=20, justify='center')
 lbl_temp.pack(side='top')
-lbl_tempto = Label(tab_temp, text='to', justify='center')
-lbl_tempto.place(relx=0.3, rely=0.2, anchor='nw')
+lbl_tempto = Label(tab_temp, text='to', font=("Calibri", 12), justify='center')
+lbl_tempto.place(relx=0.4, rely=0.2, anchor='nw')
 
 temp_input = Entry(tab_temp,width=10)
-temp_input.place(relx=0.05, rely=0.2, anchor='nw')
+temp_input.place(relx=0.15, rely=0.2, anchor='nw')
 
 temp_box_value1 = StringVar()
 temp_combo1 = Combobox(tab_temp, textvariable=temp_box_value1, width=3)
 temp_combo1['values'] = ("C","F")
 temp_combo1.bind('<<ComboboxSelected>>')
 temp_combo1.current(0)    #set the selected item
-temp_combo1.place(relx=0.2, rely=0.2, anchor='nw')
+temp_combo1.place(relx=0.3, rely=0.2, anchor='nw')
 
 temp_box_value2 = StringVar()
 temp_combo2 = Combobox(tab_temp, textvariable=temp_box_value2, width=3)
 temp_combo2['values'] = ("C","F")
 temp_combo2.bind('<<ComboboxSelected>>')
 temp_combo2.current(1)    #set the selected item
-temp_combo2.place(relx=0.35, rely=0.2, anchor='nw')
+temp_combo2.place(relx=0.45, rely=0.2, anchor='nw')
+
+lbl_tempeq = Label(tab_temp, text='=', font=("Calibri", 12), justify='center')
+lbl_tempeq.place(relx=0.56, rely=0.2, anchor='nw')
 
 temp_calc_btn = Button(tab_temp, text="Calculate", command=calculate_temp)
-temp_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
+temp_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
-temp_results = StringVar()
-temp_results.set("")
+tempresults_entry = tk.Entry(tab_temp, width=10)
+tempresults_entry.place(relx=0.62, rely=0.2, anchor='nw')
+tempresults = ""
+tempresults_entry.insert(0, tempresults)
+
+temp_equation_title = StringVar()
+temp_equation_title.set("")
+lbl_temp_eq_title = Label(tab_temp, textvariable=temp_equation_title, font=("Calibri", 14), justify='center')
+lbl_temp_eq_title.place(relx=0.4, rely=0.5, anchor='nw')
+
 temp_equation = StringVar()
 temp_equation.set("")
-lbl_tempresults = Label(tab_temp, textvariable=temp_results, justify='center')
-lbl_tempresults.place(relx=0.2, rely=0.7, anchor='nw')
-lbl_temp_eq = Label(tab_temp, textvariable=temp_equation, justify='center')
-lbl_temp_eq.place(relx=0.2, rely=0.5, anchor='nw')
+lbl_temp_eq = Label(tab_temp, textvariable=temp_equation, font=("Calibri", 12), justify='center')
+lbl_temp_eq.place(relx=0.36, rely=0.6, anchor='nw')
+
 
 # temperature data
-lbl_tempData = Label(tab_temp, text='High Temperature Data (F)', justify='center')
-lbl_tempData.place(relx=0.65, rely=0.4, anchor='nw')
+lbl_tempData = Label(tab_temp, text='Highest Temperature Recorded by State (deg F)', justify='center')
+lbl_tempData.place(relx=0.5, rely=0.8, anchor='nw')
 
 state_box = StringVar()
 state_combo = Combobox(tab_temp, textvariable=state_box, width=11)
 state_combo['values'] = ("Alaska","Arizona","California","Colorado","Florida","Hawaii","Illinois","Maine","Montana","Nevada","New York","Oregon","Texas","Washington")
 state_combo.bind('<<ComboboxSelected>>')
 state_combo.current(0)  #set the selected item
-state_combo.place(relx=0.58, rely=0.5, anchor='nw')
+state_combo.place(relx=0.53, rely=0.9, anchor='nw')
 
 tempData_entry = tk.Entry(tab_temp, width=8)
-tempData_entry.place(relx=0.75, rely=0.5, anchor='nw')
+tempData_entry.place(relx=0.7, rely=0.9, anchor='nw')
 tempData = ""
 tempData_entry.insert(0, tempData)
 
 temp_data_btn = Button(tab_temp, text="Get Data", command=getTempData, width=9)
-temp_data_btn.place(relx=0.85, rely=0.5, anchor='nw')
+temp_data_btn.place(relx=0.8, rely=0.9, anchor='nw')
 
 # pressure
 tab_press = ttk.Frame(tab_control)
