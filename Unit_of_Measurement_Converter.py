@@ -29,14 +29,24 @@ def help_screen():
     You can use this tool to easily convert units of measurement. A one-stop shop for unit conversions!
     
     New features:
-    Temperature and Pressure conversion.
+    - Flow Rate Converter
+    - Speed Converter
+    - Currency Exchange Converter
+    - Highest Temperature Recorded by State
 
-    How to Use:
+    How to Convert Units:
     1. Select the tab of the type of units you wish to convert.
     2. Enter the value you wish to convert, and select the units you wish to convert from and to.
     3. Select the Calculate button to produce the converted results.
-    4. The results will show up in the command line interface along with the equation which was used to do the conversion.
-    5. After any calculation, you may enter a new value and units and the calculate button will generate new results.
+    4. The results will show up in the results output box.
+    5. If applicable, the equation for the conversion will also be displayed. 
+    6. After any calculation, you may enter a new value and units and the calculate button will generate new results.
+
+    How to View Highest Temperature Recorded by State:
+    1. Navigate to the temperature tab.
+    2. Select which state you wish to view the highest recorded temperature from the dropdown box.
+    3. Select the button 'Get Data'.
+    4. Data will be provided in degrees Fahrenheit.
 
     Can't find what you're looking for?
     Email your question/suggestion to the developer: osustudent@oregonstate.edu
