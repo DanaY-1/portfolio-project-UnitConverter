@@ -166,18 +166,30 @@ def calculate_speed():
 
     if from_units == "knots" and to_units == "mph":
         result = round((val*1.15077945), 1)
-        speed_equation.set("Equation: mph = knots x 1.15077945")
-        speed_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        speed_equation_title.set("Equation:")
+        speed_equation.set("mph = knots x 1.15077945")
+        output = str(result) + " " + to_units
+        speedresults_entry.delete(0, tk.END)
+        speedresults_entry.insert(0, output)
     elif from_units == "mph" and to_units == "knots":
         result = round(val / 1.15077945, 1)
-        speed_equation.set("Equation: knots = mph / 1.15077945")
-        speed_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        speed_equation_title.set("Equation:")
+        speed_equation.set("knots = mph / 1.15077945")
+        output = str(result) + " " + to_units
+        speedresults_entry.delete(0, tk.END)
+        speedresults_entry.insert(0, output)
     elif from_units == to_units:
-        flow_equation.set("")
-        flow_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(val) + " "  + to_units)
+        speed_equation_title.set("")
+        speed_equation.set("")
+        output = str(val) + " " + to_units
+        speedresults_entry.delete(0, tk.END)
+        speedresults_entry.insert(0, output)
     else:
-        flow_equation.set("")
-        flow_results.set("Error")
+        speed_equation_title.set("")
+        speed_equation.set("")
+        output = "Error"
+        speedresults_entry.delete(0, tk.END)
+        speedresults_entry.insert(0, output)
 
 def calculate_currency():
     try:
@@ -205,7 +217,9 @@ def calculate_currency():
     while True:
         recvData = client.recv(4098)
         result = recvData.decode()
-        currency_results.set("Results: " + str(val) + " "  + from_units + ' = ' + str(result) + " "  + to_units)
+        output = str(result) + " " + to_units
+        currencyresults_entry.delete(0, tk.END)
+        currencyresults_entry.insert(0, output)
         print(recvData.decode('utf-8'))
         break
 
@@ -258,33 +272,33 @@ tab_control.add(tab_temp, text='Temperature')
 lbl_temp = Label(tab_temp, text='Convert Temperature Units', font=20, justify='center')
 lbl_temp.pack(side='top')
 lbl_tempto = Label(tab_temp, text='to', font=("Calibri", 12), justify='center')
-lbl_tempto.place(relx=0.4, rely=0.2, anchor='nw')
+lbl_tempto.place(relx=0.43, rely=0.2, anchor='nw')
 
 temp_input = Entry(tab_temp,width=10)
 temp_input.place(relx=0.15, rely=0.2, anchor='nw')
 
 temp_box_value1 = StringVar()
-temp_combo1 = Combobox(tab_temp, textvariable=temp_box_value1, width=3)
+temp_combo1 = Combobox(tab_temp, textvariable=temp_box_value1, width=7)
 temp_combo1['values'] = ("C","F")
 temp_combo1.bind('<<ComboboxSelected>>')
 temp_combo1.current(0)    #set the selected item
 temp_combo1.place(relx=0.3, rely=0.2, anchor='nw')
 
 temp_box_value2 = StringVar()
-temp_combo2 = Combobox(tab_temp, textvariable=temp_box_value2, width=3)
+temp_combo2 = Combobox(tab_temp, textvariable=temp_box_value2, width=7)
 temp_combo2['values'] = ("C","F")
 temp_combo2.bind('<<ComboboxSelected>>')
 temp_combo2.current(1)    #set the selected item
-temp_combo2.place(relx=0.45, rely=0.2, anchor='nw')
+temp_combo2.place(relx=0.47, rely=0.2, anchor='nw')
 
 lbl_tempeq = Label(tab_temp, text='=', font=("Calibri", 12), justify='center')
-lbl_tempeq.place(relx=0.56, rely=0.2, anchor='nw')
+lbl_tempeq.place(relx=0.6, rely=0.2, anchor='nw')
 
 temp_calc_btn = Button(tab_temp, text="Calculate", command=calculate_temp)
 temp_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
-tempresults_entry = tk.Entry(tab_temp, width=10)
-tempresults_entry.place(relx=0.62, rely=0.2, anchor='nw')
+tempresults_entry = tk.Entry(tab_temp, width=13)
+tempresults_entry.place(relx=0.64, rely=0.2, anchor='nw')
 tempresults = ""
 tempresults_entry.insert(0, tempresults)
 
@@ -297,7 +311,6 @@ temp_equation = StringVar()
 temp_equation.set("")
 lbl_temp_eq = Label(tab_temp, textvariable=temp_equation, font=("Calibri", 12), justify='center')
 lbl_temp_eq.place(relx=0.47, rely=0.6, anchor='n')
-
 
 # temperature data
 lbl_tempData = Label(tab_temp, text='Highest Temperature Recorded by State (deg F)', justify='center')
@@ -324,33 +337,33 @@ tab_control.add(tab_press, text='Pressure')
 lbl_press = Label(tab_press, text='Convert Pressure Units', font=20, justify='center')
 lbl_press.pack(side='top')
 lbl_pressto = Label(tab_press, text='to', font=("Calibri", 12), justify='center')
-lbl_pressto.place(relx=0.41, rely=0.2, anchor='nw')
+lbl_pressto.place(relx=0.43, rely=0.2, anchor='nw')
 
 press_input = Entry(tab_press,width=10)
 press_input.place(relx=0.15, rely=0.2, anchor='nw')
 
 press_box_value1 = StringVar()
-press_combo1 = Combobox(tab_press, textvariable=press_box_value1, width=5)
+press_combo1 = Combobox(tab_press, textvariable=press_box_value1, width=7)
 press_combo1['values'] = ("mbar","psi")
 press_combo1.bind('<<ComboboxSelected>>')
 press_combo1.current(0)    #set the selected item
 press_combo1.place(relx=0.3, rely=0.2, anchor='nw')
 
 press_box_value2 = StringVar()
-press_combo2 = Combobox(tab_press, textvariable=press_box_value2, width=5)
+press_combo2 = Combobox(tab_press, textvariable=press_box_value2, width=7)
 press_combo2['values'] = ("mbar","psi")
 press_combo2.bind('<<ComboboxSelected>>')
 press_combo2.current(1)    #set the selected item
-press_combo2.place(relx=0.45, rely=0.2, anchor='nw')
+press_combo2.place(relx=0.47, rely=0.2, anchor='nw')
 
 lbl_presseq = Label(tab_press, text='=', font=("Calibri", 12), justify='center')
-lbl_presseq.place(relx=0.56, rely=0.2, anchor='nw')
+lbl_presseq.place(relx=0.6, rely=0.2, anchor='nw')
 
 press_calc_btn = Button(tab_press, text="Calculate", command=calculate_press)
 press_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
 pressresults_entry = tk.Entry(tab_press, width=13)
-pressresults_entry.place(relx=0.62, rely=0.2, anchor='nw')
+pressresults_entry.place(relx=0.64, rely=0.2, anchor='nw')
 pressresults = ""
 pressresults_entry.insert(0, pressresults)
 
@@ -415,75 +428,83 @@ tab_speed = ttk.Frame(tab_control)
 tab_control.add(tab_speed, text='Speed')
 lbl_speed = Label(tab_speed, text='Convert Speed Units', font=20, justify='center')
 lbl_speed.pack(side='top')
-lbl_speedto = Label(tab_speed, text='to', justify='center')
-lbl_speedto.place(relx=0.3, rely=0.2, anchor='nw')
+lbl_speedto = Label(tab_speed, text='to', font=("Calibri", 12), justify='center')
+lbl_speedto.place(relx=0.43, rely=0.2, anchor='nw')
 
 speed_input = Entry(tab_speed,width=10)
-speed_input.place(relx=0.05, rely=0.2, anchor='nw')
+speed_input.place(relx=0.15, rely=0.2, anchor='nw')
 
 speed_box_value1 = StringVar()
-speed_combo1 = Combobox(tab_speed, textvariable=speed_box_value1, width=5)
+speed_combo1 = Combobox(tab_speed, textvariable=speed_box_value1, width=7)
 speed_combo1['values'] = ("knots","mph")
 speed_combo1.bind('<<ComboboxSelected>>')
 speed_combo1.current(0)    #set the selected item
-speed_combo1.place(relx=0.2, rely=0.2, anchor='nw')
+speed_combo1.place(relx=0.3, rely=0.2, anchor='nw')
 
 speed_box_value2 = StringVar()
-speed_combo2 = Combobox(tab_speed, textvariable=speed_box_value2, width=5)
+speed_combo2 = Combobox(tab_speed, textvariable=speed_box_value2, width=7)
 speed_combo2['values'] = ("knots","mph")
 speed_combo2.bind('<<ComboboxSelected>>')
 speed_combo2.current(1)    #set the selected item
-speed_combo2.place(relx=0.35, rely=0.2, anchor='nw')
+speed_combo2.place(relx=0.47, rely=0.2, anchor='nw')
+
+lbl_speedeq = Label(tab_speed, text='=', font=("Calibri", 12), justify='center')
+lbl_speedeq.place(relx=0.6, rely=0.2, anchor='nw')
 
 speed_calc_btn = Button(tab_speed, text="Calculate", command=calculate_speed)
-speed_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
+speed_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
-speed_results = StringVar()
-speed_results.set("")
+speedresults_entry = tk.Entry(tab_speed, width=13)
+speedresults_entry.place(relx=0.64, rely=0.2, anchor='nw')
+speedresults = ""
+speedresults_entry.insert(0, speedresults)
+
+speed_equation_title = StringVar()
+speed_equation_title.set("")
+lbl_speed_eq_title = Label(tab_speed, textvariable=speed_equation_title, font=("Calibri", 14), justify='center')
+lbl_speed_eq_title.place(relx=0.4, rely=0.5, anchor='nw')
+
 speed_equation = StringVar()
 speed_equation.set("")
-lbl_speedresults = Label(tab_speed, textvariable=speed_results, justify='center')
-lbl_speedresults.place(relx=0.2, rely=0.7, anchor='nw')
-lbl_speed_eq = Label(tab_speed, textvariable=speed_equation, justify='center')
-lbl_speed_eq.place(relx=0.2, rely=0.5, anchor='nw')
+lbl_speed_eq = Label(tab_speed, textvariable=speed_equation, font=("Calibri", 12), justify='center')
+lbl_speed_eq.place(relx=0.47, rely=0.6, anchor='n')
+
 
 # currency
 tab_currency = ttk.Frame(tab_control)
 tab_control.add(tab_currency, text='Currency')
 lbl_currency = Label(tab_currency, text='Convert Currency', font=20, justify='center')
 lbl_currency.pack(side='top')
-lbl_currencyto = Label(tab_currency, text='to', justify='center')
-lbl_currencyto.place(relx=0.3, rely=0.2, anchor='nw')
+lbl_currencyto = Label(tab_currency, text='to', font=("Calibri", 12), justify='center')
+lbl_currencyto.place(relx=0.43, rely=0.2, anchor='nw')
 
 currency_input = Entry(tab_currency,width=10)
-currency_input.place(relx=0.05, rely=0.2, anchor='nw')
+currency_input.place(relx=0.15, rely=0.2, anchor='nw')
 
 currency_box_value1 = StringVar()
-currency_combo1 = Combobox(tab_currency, textvariable=currency_box_value1, width=5)
+currency_combo1 = Combobox(tab_currency, textvariable=currency_box_value1, width=7)
 currency_combo1['values'] = ("USD","EUR","GBP","CAD","JPY","MXN","CHF","AMD","AUD","BRL")
 currency_combo1.bind('<<ComboboxSelected>>')
 currency_combo1.current(0)    #set the selected item
-currency_combo1.place(relx=0.2, rely=0.2, anchor='nw')
+currency_combo1.place(relx=0.3, rely=0.2, anchor='nw')
 
 currency_box_value2 = StringVar()
-currency_combo2 = Combobox(tab_currency, textvariable=currency_box_value2, width=5)
+currency_combo2 = Combobox(tab_currency, textvariable=currency_box_value2, width=7)
 currency_combo2['values'] = ("USD","EUR","GBP","CAD","JPY","MXN","CHF","AMD","AUD","BRL")
 currency_combo2.bind('<<ComboboxSelected>>')
 currency_combo2.current(1)    #set the selected item
-currency_combo2.place(relx=0.35, rely=0.2, anchor='nw')
+currency_combo2.place(relx=0.47, rely=0.2, anchor='nw')
+
+lbl_currencyeq = Label(tab_currency, text='=', font=("Calibri", 12), justify='center')
+lbl_currencyeq.place(relx=0.6, rely=0.2, anchor='nw')
 
 currency_calc_btn = Button(tab_currency, text="Calculate", command=calculate_currency)
-currency_calc_btn.place(relx=0.5, rely=0.2, anchor='nw')
+currency_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
-currency_results = StringVar()
-currency_results.set("")
-currency_equation = StringVar()
-currency_equation.set("")
-lbl_currencyresults = Label(tab_currency, textvariable=currency_results, justify='center')
-lbl_currencyresults.place(relx=0.2, rely=0.7, anchor='nw')
-lbl_currency_eq = Label(tab_currency, textvariable=currency_equation, justify='center')
-lbl_currency_eq.place(relx=0.2, rely=0.5, anchor='nw')
-
+currencyresults_entry = tk.Entry(tab_currency, width=13)
+currencyresults_entry.place(relx=0.64, rely=0.2, anchor='nw')
+currencyresults = ""
+currencyresults_entry.insert(0, currencyresults)
 
 
 tab_control.pack(expand=1, fill='both')
