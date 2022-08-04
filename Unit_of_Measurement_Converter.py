@@ -69,6 +69,16 @@ def convert_to_float(val_str):
         print("Enter a number to convert.")
         return
 
+def calc_error_handling(val, to_units, from_units):
+    """Error handling for unit conversion entries."""
+    if from_units == to_units:
+        result = val
+        equation = ""
+    else:
+        result = ""
+        equation = ""
+    return result, equation
+
 def display_equation(tab_eq_title, tab_eq, equation):
     """Displays equation for conversion."""
     tab_eq_title.set("Equation:")
@@ -98,12 +108,8 @@ def calculate_temp(val, from_units, to_units):
     elif from_units == "F" and to_units == "C":
         result = round((val - 32) * (5/9), 1)
         equation = "C = (F - 32) x (5/9)"
-    elif from_units == to_units:
-        result = val
-        equation = ""
     else:
-        result = ""
-        equation = ""
+        result, equation = calc_error_handling(val, to_units, from_units)
     return result, equation
 
 def convert_pressure():
@@ -124,12 +130,8 @@ def calculate_press(val, from_units, to_units):
     elif from_units == "psi" and to_units == "mbar":
         result = round(val * 68.9475729318, 1)
         equation = "mbar = psi * 68.9475729318"
-    elif from_units == to_units:
-        result = val
-        equation = ""
     else:
-        result = ""
-        equation = ""
+        result, equation = calc_error_handling(val, to_units, from_units)
     return result, equation
 
 def convert_flow():
@@ -150,12 +152,8 @@ def calculate_flow(val, from_units, to_units):
     elif from_units == "lbs/min" and to_units == "lbs/sec":
         result = round(val / 60, 1)
         equation = "lbs/sec = (lbs/min) / 60"
-    elif from_units == to_units:
-        result = val
-        equation = ""
     else:
-        result = ""
-        equation = ""
+        result, equation = calc_error_handling(val, to_units, from_units)
     return result, equation
 
 def convert_speed():
@@ -176,12 +174,8 @@ def calculate_speed(val, from_units, to_units):
     elif from_units == "mph" and to_units == "knots":
         result = round(val / 1.15077945, 1)
         equation = "knots = mph / 1.15077945"
-    elif from_units == to_units:
-        result = val
-        equation = ""
     else:
-        result = ""
-        equation = ""
+        result, equation = calc_error_handling(val, to_units, from_units)
     return result, equation
 
 def convert_currency():
@@ -195,6 +189,7 @@ def convert_currency():
     val = calculate_currency(val, from_units, to_units, client)
 
 def calculate_currency(val, from_units, to_units, client):
+    """Calculatues Currency Conversion by requesting data from Microservice."""
     data = json.dumps({"base_currency": from_units, "des_currency": to_units, "amount_to_convert": val})
     client.send(data.encode())      # request data from microservice
     recvData = client.recv(4098)    # receive data from microservice
@@ -203,6 +198,7 @@ def calculate_currency(val, from_units, to_units, client):
     print(recvData.decode('utf-8'))
 
 def getTempData():
+    """Gets high temperature data for a given state by requesting data from Microservice."""
     data = state_combo.get()
     # set up communication via socket
     client = setup_socket_comms('127.0.0.1', 5050)
@@ -450,7 +446,6 @@ speed_equation = StringVar()
 speed_equation.set("")
 lbl_speed_eq = Label(tab_speed, textvariable=speed_equation, font=("Calibri", 12), justify='center')
 lbl_speed_eq.place(relx=0.47, rely=0.6, anchor='n')
-
 
 # currency tab
 tab_currency = ttk.Frame(tab_control)
