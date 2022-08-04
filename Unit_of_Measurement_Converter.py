@@ -10,13 +10,13 @@ import json
 help_screen_msg = """
 Welcome to the Unit of Measurement Converter tool!
 
-You can use this tool to easily convert units of measurement. A one-stop shop for unit conversions!
+You can use this tool to easily convert units of measurement.
 
 New features:
-- Flow Rate Converter
-- Speed Converter
-- Currency Exchange Converter
-- Highest Temperature Recorded by State
+- Flow Rate Converter - converts units of flow rate
+- Speed Converter - converts units of speed
+- Currency Exchange Converter - converts between currencies
+- Highest Temperature Recorded by State - provides data on the highest temperatures recorded by state
 
 How to Convert Units:
 1. Select the tab of the type of units you wish to convert.
@@ -26,7 +26,8 @@ How to Convert Units:
 5. If applicable, the equation for the conversion will also be displayed. 
 6. After any calculation, you may enter a new value and units and the calculate button will generate new results.
 
-How to View Highest Temperature Recorded by State:
+Highest Temperature Recorded by State:
+This features allows you to select a state and get data on the highest recorded temperature for that state.
 1. Navigate to the temperature tab.
 2. Select which state you wish to view the highest recorded temperature from the dropdown box.
 3. Select the button 'Get Data'.
@@ -241,6 +242,12 @@ lbl_home = Label(tab_home, text="Select the tab for the type of units you wish t
 lbl_home.place(relx=0.05, rely=0.3, anchor='nw')
 lbl_home2 = Label(tab_home, text="You can use this tool to easily convert units of measurement.", font=("Calibri", 12))
 lbl_home2.place(relx=0.05, rely=0.1, anchor='nw')
+new_features = """
+New features are now available!
+For more information on new features select the Help button.
+"""
+lbl_home3 = Label(tab_home, text=new_features, font=("Calibri", 10))
+lbl_home3.place(relx=0.05, rely=0.8, anchor='nw')
 help_btn = Button(tab_home, text="Help", command=help_screen)
 help_btn.place(relx=1.0, rely=1.0, x=0, y=0, anchor='se')
 
