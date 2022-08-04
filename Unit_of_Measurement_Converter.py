@@ -6,13 +6,46 @@ from tkinter import ttk
 import socket
 import json
 
-window = Tk()
+# Help Screen Message
+help_screen_msg = """
+Welcome to the Unit of Measurement Converter tool!
 
-window.title("Unit of Measurement Converter")
-window.geometry('550x300')
+You can use this tool to easily convert units of measurement. A one-stop shop for unit conversions!
 
+New features:
+- Flow Rate Converter
+- Speed Converter
+- Currency Exchange Converter
+- Highest Temperature Recorded by State
+
+How to Convert Units:
+1. Select the tab of the type of units you wish to convert.
+2. Enter the value you wish to convert, and select the units you wish to convert from and to.
+3. Select the Calculate button to produce the converted results.
+4. The results will show up in the results output box.
+5. If applicable, the equation for the conversion will also be displayed. 
+6. After any calculation, you may enter a new value and units and the calculate button will generate new results.
+
+How to View Highest Temperature Recorded by State:
+1. Navigate to the temperature tab.
+2. Select which state you wish to view the highest recorded temperature from the dropdown box.
+3. Select the button 'Get Data'.
+4. Data will be provided in degrees Fahrenheit.
+
+Can't find what you're looking for?
+Email your question/suggestion to the developer: osustudent@oregonstate.edu
+
+
+
+"""
+
+#######################################################################################################
+# Functions
+#
+#
+#######################################################################################################
 def help_screen():
-    # Help Window
+    """Help Window Configuration"""
     window_help = tk.Tk()
     window_help.title("Unit of Measurement Converter - Help")
     txt = tk.Text(window_help, width=125, height=25)
@@ -21,252 +54,191 @@ def help_screen():
     txt.pack(side=tk.LEFT)
     scroll.config(command=txt.yview)
     scroll.pack(side=tk.RIGHT, fill=tk.Y)
-
-    # Welcome Message
-    insert_text = """
-    Welcome to the Unit of Measurement Converter tool!
     
-    You can use this tool to easily convert units of measurement. A one-stop shop for unit conversions!
-    
-    New features:
-    - Flow Rate Converter
-    - Speed Converter
-    - Currency Exchange Converter
-    - Highest Temperature Recorded by State
-
-    How to Convert Units:
-    1. Select the tab of the type of units you wish to convert.
-    2. Enter the value you wish to convert, and select the units you wish to convert from and to.
-    3. Select the Calculate button to produce the converted results.
-    4. The results will show up in the results output box.
-    5. If applicable, the equation for the conversion will also be displayed. 
-    6. After any calculation, you may enter a new value and units and the calculate button will generate new results.
-
-    How to View Highest Temperature Recorded by State:
-    1. Navigate to the temperature tab.
-    2. Select which state you wish to view the highest recorded temperature from the dropdown box.
-    3. Select the button 'Get Data'.
-    4. Data will be provided in degrees Fahrenheit.
-
-    Can't find what you're looking for?
-    Email your question/suggestion to the developer: osustudent@oregonstate.edu
-
-
-
-    """
-    txt.insert(INSERT, insert_text)
+    txt.insert(INSERT, help_screen_msg)
     window_help.mainloop()
 
-def calculate_temp():
+def convert_to_float(val_str):
+    """Converts a given value to a float. 
+    Returns an error message if conversion can't be performed.
+    """
     try:
-        val = float(temp_input.get())
+        val = float(val_str)
+        return val
     except:
         print("Enter a number to convert.")
         return
+
+def display_equation(tab_eq_title, tab_eq, equation):
+    """Displays equation for conversion."""
+    tab_eq_title.set("Equation:")
+    tab_eq.set(equation)
+
+def display_result(result, to_units, tab_entry):
+    """Displays results for conversion."""
+    output = str(result) + " " + to_units
+    tab_entry.delete(0, tk.END)
+    tab_entry.insert(0, output)
+
+def convert_temperature():
+    """Converts given temperature and displays results."""
+    val = convert_to_float(temp_input.get())
     from_units = temp_box_value1.get()
     to_units = temp_box_value2.get()
 
+    val, equation = calculate_temp(val, from_units, to_units)
+    display_equation(temp_equation_title, temp_equation, equation)
+    display_result(val, to_units, tempresults_entry)
+
+def calculate_temp(val, from_units, to_units):
+    """Calculatues Temperature Conversion."""
     if from_units == "C" and to_units == "F":
         result = round((val * (9/5)) + 32, 1)
-        temp_equation_title.set("Equation:")
-        temp_equation.set("F = (C x 9/5) + 32")
-        output = str(result) + " " + to_units
-        tempresults_entry.delete(0, tk.END)
-        tempresults_entry.insert(0, output)
+        equation = "F = (C x 9/5) + 32"  
     elif from_units == "F" and to_units == "C":
         result = round((val - 32) * (5/9), 1)
-        temp_equation_title.set("Equation:")
-        temp_equation.set("C = (F - 32) x (5/9)")
-        output = str(result) + " " + to_units
-        tempresults_entry.delete(0, tk.END)
-        tempresults_entry.insert(0, output)
+        equation = "C = (F - 32) x (5/9)"
     elif from_units == to_units:
-        temp_equation_title.set("")
-        temp_equation.set("")
-        output = str(val) + " " + to_units
-        tempresults_entry.delete(0, tk.END)
-        tempresults_entry.insert(0, output)
+        result = val
+        equation = ""
     else:
-        temp_equation_title.set("")
-        temp_equation.set("")
-        output = "Error"
-        tempresults_entry.delete(0, tk.END)
-        tempresults_entry.insert(0, output)
+        result = ""
+        equation = ""
+    return result, equation
 
-def calculate_press():
-    try:
-        val = float(press_input.get())
-    except:
-        print("Enter a number to convert.")
-        return
+def convert_pressure():
+    """Converts given pressure and displays results."""
+    val = convert_to_float(press_input.get())
     from_units = press_box_value1.get()
     to_units = press_box_value2.get()
 
+    val, equation = calculate_press(val, from_units, to_units)
+    display_equation(press_equation_title, press_equation, equation)
+    display_result(val, to_units, pressresults_entry)
+
+def calculate_press(val, from_units, to_units):
+    """Calculatues Pressure Conversion."""
     if from_units == "mbar" and to_units == "psi":
         result = round((val*0.0145037738), 1)
-        press_equation_title.set("Equation:")
-        press_equation.set("psi = mbar x 0.0145037738")
-        output = str(result) + " " + to_units
-        pressresults_entry.delete(0, tk.END)
-        pressresults_entry.insert(0, output)
+        equation = "psi = mbar x 0.0145037738" 
     elif from_units == "psi" and to_units == "mbar":
         result = round(val * 68.9475729318, 1)
-        press_equation_title.set("Equation:")
-        press_equation.set("mbar = psi * 68.9475729318")
-        output = str(result) + " " + to_units
-        pressresults_entry.delete(0, tk.END)
-        pressresults_entry.insert(0, output)
+        equation = "mbar = psi * 68.9475729318"
     elif from_units == to_units:
-        press_equation_title.set("")
-        press_equation.set("")
-        output = str(val) + " " + to_units
-        pressresults_entry.delete(0, tk.END)
-        pressresults_entry.insert(0, output)
+        result = val
+        equation = ""
     else:
-        press_equation_title.set("")
-        press_equation.set("")
-        output = "Error"
-        pressresults_entry.delete(0, tk.END)
-        pressresults_entry.insert(0, output)
+        result = ""
+        equation = ""
+    return result, equation
 
-def calculate_flow():
-    try:
-        val = float(flow_input.get())
-    except:
-        print("Enter a number to convert.")
-        return
+def convert_flow():
+    """Converts given flow and displays results."""
+    val = convert_to_float(flow_input.get())
     from_units = flow_box_value1.get()
     to_units = flow_box_value2.get()
 
+    val, equation = calculate_flow(val, from_units, to_units)
+    display_equation(flow_equation_title, flow_equation, equation)
+    display_result(val, to_units, flowresults_entry)
+
+def calculate_flow(val, from_units, to_units):
+    """Calculatues Flow Conversion."""
     if from_units == "lbs/sec" and to_units == "lbs/min":
         result = round((val*60), 1)
-        flow_equation_title.set("Equation:")
-        flow_equation.set("lbs/min = (lbs/sec) x 60")
-        output = str(result) + " " + to_units
-        flowresults_entry.delete(0, tk.END)
-        flowresults_entry.insert(0, output)
+        equation = "lbs/min = (lbs/sec) x 60" 
     elif from_units == "lbs/min" and to_units == "lbs/sec":
         result = round(val / 60, 1)
-        flow_equation_title.set("Equation:")
-        flow_equation.set("lbs/sec = (lbs/min) / 60")
-        output = str(result) + " " + to_units
-        flowresults_entry.delete(0, tk.END)
-        flowresults_entry.insert(0, output)
+        equation = "lbs/sec = (lbs/min) / 60"
     elif from_units == to_units:
-        flow_equation_title.set("")
-        flow_equation.set("")
-        output = str(val) + " " + to_units
-        flowresults_entry.delete(0, tk.END)
-        flowresults_entry.insert(0, output)
+        result = val
+        equation = ""
     else:
-        flow_equation_title.set("")
-        flow_equation.set("")
-        output = "Error"
-        flowresults_entry.delete(0, tk.END)
-        flowresults_entry.insert(0, output)
+        result = ""
+        equation = ""
+    return result, equation
 
-def calculate_speed():
-    try:
-        val = float(speed_input.get())
-    except:
-        print("Enter a number to convert.")
-        return
+def convert_speed():
+    """Converts given speed and displays results."""
+    val = convert_to_float(speed_input.get())
     from_units = speed_box_value1.get()
     to_units = speed_box_value2.get()
 
+    val, equation = calculate_speed(val, from_units, to_units)
+    display_equation(speed_equation_title, speed_equation, equation)
+    display_result(val, to_units, speedresults_entry)
+
+def calculate_speed(val, from_units, to_units):
+    """Calculatues Speed Conversion."""
     if from_units == "knots" and to_units == "mph":
         result = round((val*1.15077945), 1)
-        speed_equation_title.set("Equation:")
-        speed_equation.set("mph = knots x 1.15077945")
-        output = str(result) + " " + to_units
-        speedresults_entry.delete(0, tk.END)
-        speedresults_entry.insert(0, output)
+        equation = "mph = knots x 1.15077945"
     elif from_units == "mph" and to_units == "knots":
         result = round(val / 1.15077945, 1)
-        speed_equation_title.set("Equation:")
-        speed_equation.set("knots = mph / 1.15077945")
-        output = str(result) + " " + to_units
-        speedresults_entry.delete(0, tk.END)
-        speedresults_entry.insert(0, output)
+        equation = "knots = mph / 1.15077945"
     elif from_units == to_units:
-        speed_equation_title.set("")
-        speed_equation.set("")
-        output = str(val) + " " + to_units
-        speedresults_entry.delete(0, tk.END)
-        speedresults_entry.insert(0, output)
+        result = val
+        equation = ""
     else:
-        speed_equation_title.set("")
-        speed_equation.set("")
-        output = "Error"
-        speedresults_entry.delete(0, tk.END)
-        speedresults_entry.insert(0, output)
+        result = ""
+        equation = ""
+    return result, equation
 
-def calculate_currency():
-    try:
-        val = float(currency_input.get())
-    except:
-        print("Enter a number to convert.")
-        return
-    
-    # set up communication via socket
-    Host = '127.0.0.1'
-    Port = 1080
-
-    #connect to server
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect((Host, Port))
-    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    print("Connected to: ", Host, Port)
-
+def convert_currency():
+    """Converts given currency and displays results."""
+    val = convert_to_float(currency_input.get())
     from_units = currency_box_value1.get()
     to_units = currency_box_value2.get()
+    # set up communication via socket
+    client = setup_socket_comms('127.0.0.1', 1080)
+    
+    val = calculate_currency(val, from_units, to_units, client)
 
+def calculate_currency(val, from_units, to_units, client):
     data = json.dumps({"base_currency": from_units, "des_currency": to_units, "amount_to_convert": val})
-    client.send(data.encode())
-
-    while True:
-        recvData = client.recv(4098)
-        result = recvData.decode()
-        output = str(result) + " " + to_units
-        currencyresults_entry.delete(0, tk.END)
-        currencyresults_entry.insert(0, output)
-        print(recvData.decode('utf-8'))
-        break
+    client.send(data.encode())      # request data from microservice
+    recvData = client.recv(4098)    # receive data from microservice
+    result = recvData.decode()
+    display_result(result, to_units, currencyresults_entry)
+    print(recvData.decode('utf-8'))
 
 def getTempData():
-    state = state_combo.get()
-
+    data = state_combo.get()
     # set up communication via socket
-    Host = '127.0.0.1'
-    Port = 5050
-
-    #connect to server
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect((Host, Port))
-    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    print("Connected to: ", Host, Port)
-
-    data = state
-
-    client.send(data.encode())
-
-    while True:
-        recvData = client.recv(2048)
-        result = recvData.decode()
-        tempData = str(result)
-        tempData_entry.delete(0, tk.END)
-        tempData_entry.insert(0, tempData)
-        print(recvData.decode('utf-8'))
-        break
-
+    client = setup_socket_comms('127.0.0.1', 5050)
+    client.send(data.encode())      # request data from microservice
+    recvData = client.recv(2048)    # receive data from microservice
+    result = recvData.decode()
+    display_result(result, "F", tempData_entry)
+    print(recvData.decode('utf-8'))
     # close connection
     data = "!DISCONNECT"
     client.send(data.encode())
     
+def setup_socket_comms(host, port):
+    """Sets up a client and socket communication with specified host and port.
+    Used for microservice communication.
+    """
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect((host, port))
+    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    print("Connected to: ", host, port)
+    return client
+
+
+#######################################################################################################
+# GUI Structure
+#
+#
+#######################################################################################################
+window = Tk()
+
+window.title("Unit of Measurement Converter")
+window.geometry('550x300')
 
 tab_control = ttk.Notebook(window)
 
-# home
+# home tab
 tab_home = ttk.Frame(tab_control)
 tab_control.add(tab_home, text='Home')
 lbl_home = Label(tab_home, text="Select the tab for the type of units you wish to convert.", font=("Calibri", 12))
@@ -276,7 +248,7 @@ lbl_home2.place(relx=0.05, rely=0.1, anchor='nw')
 help_btn = Button(tab_home, text="Help", command=help_screen)
 help_btn.place(relx=1.0, rely=1.0, x=0, y=0, anchor='se')
 
-# temperature
+# temperature tab
 tab_temp = ttk.Frame(tab_control)
 tab_control.add(tab_temp, text='Temperature')
 lbl_temp = Label(tab_temp, text='Convert Temperature Units', font=20, justify='center')
@@ -304,7 +276,7 @@ temp_combo2.place(relx=0.47, rely=0.2, anchor='nw')
 lbl_tempeq = Label(tab_temp, text='=', font=("Calibri", 12), justify='center')
 lbl_tempeq.place(relx=0.6, rely=0.2, anchor='nw')
 
-temp_calc_btn = Button(tab_temp, text="Calculate", command=calculate_temp)
+temp_calc_btn = Button(tab_temp, text="Calculate", command=convert_temperature)
 temp_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
 tempresults_entry = tk.Entry(tab_temp, width=13)
@@ -322,7 +294,7 @@ temp_equation.set("")
 lbl_temp_eq = Label(tab_temp, textvariable=temp_equation, font=("Calibri", 12), justify='center')
 lbl_temp_eq.place(relx=0.47, rely=0.6, anchor='n')
 
-# temperature data
+# state temperature data
 lbl_tempData = Label(tab_temp, text='Highest Temperature Recorded by State (deg F)', justify='center')
 lbl_tempData.place(relx=0.5, rely=0.8, anchor='nw')
 
@@ -341,7 +313,7 @@ tempData_entry.insert(0, tempData)
 temp_data_btn = Button(tab_temp, text="Get Data", command=getTempData, width=9)
 temp_data_btn.place(relx=0.8, rely=0.9, anchor='nw')
 
-# pressure
+# pressure tab
 tab_press = ttk.Frame(tab_control)
 tab_control.add(tab_press, text='Pressure')
 lbl_press = Label(tab_press, text='Convert Pressure Units', font=20, justify='center')
@@ -369,7 +341,7 @@ press_combo2.place(relx=0.47, rely=0.2, anchor='nw')
 lbl_presseq = Label(tab_press, text='=', font=("Calibri", 12), justify='center')
 lbl_presseq.place(relx=0.6, rely=0.2, anchor='nw')
 
-press_calc_btn = Button(tab_press, text="Calculate", command=calculate_press)
+press_calc_btn = Button(tab_press, text="Calculate", command=convert_pressure)
 press_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
 pressresults_entry = tk.Entry(tab_press, width=13)
@@ -387,7 +359,7 @@ press_equation.set("")
 lbl_press_eq = Label(tab_press, textvariable=press_equation, font=("Calibri", 12), justify='center')
 lbl_press_eq.place(relx=0.47, rely=0.6, anchor='n')
 
-# flow rate
+# flow rate tab
 tab_flow = ttk.Frame(tab_control)
 tab_control.add(tab_flow, text='Flow Rate')
 lbl_flow = Label(tab_flow, text='Convert Flow Rate Units', font=20, justify='center')
@@ -415,7 +387,7 @@ flow_combo2.place(relx=0.47, rely=0.2, anchor='nw')
 lbl_floweq = Label(tab_flow, text='=', font=("Calibri", 12), justify='center')
 lbl_floweq.place(relx=0.6, rely=0.2, anchor='nw')
 
-flow_calc_btn = Button(tab_flow, text="Calculate", command=calculate_flow)
+flow_calc_btn = Button(tab_flow, text="Calculate", command=convert_flow)
 flow_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
 flowresults_entry = tk.Entry(tab_flow, width=13)
@@ -433,7 +405,7 @@ flow_equation.set("")
 lbl_flow_eq = Label(tab_flow, textvariable=flow_equation, font=("Calibri", 12), justify='center')
 lbl_flow_eq.place(relx=0.47, rely=0.6, anchor='n')
 
-# speed
+# speed tab
 tab_speed = ttk.Frame(tab_control)
 tab_control.add(tab_speed, text='Speed')
 lbl_speed = Label(tab_speed, text='Convert Speed Units', font=20, justify='center')
@@ -461,7 +433,7 @@ speed_combo2.place(relx=0.47, rely=0.2, anchor='nw')
 lbl_speedeq = Label(tab_speed, text='=', font=("Calibri", 12), justify='center')
 lbl_speedeq.place(relx=0.6, rely=0.2, anchor='nw')
 
-speed_calc_btn = Button(tab_speed, text="Calculate", command=calculate_speed)
+speed_calc_btn = Button(tab_speed, text="Calculate", command=convert_speed)
 speed_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
 speedresults_entry = tk.Entry(tab_speed, width=13)
@@ -480,7 +452,7 @@ lbl_speed_eq = Label(tab_speed, textvariable=speed_equation, font=("Calibri", 12
 lbl_speed_eq.place(relx=0.47, rely=0.6, anchor='n')
 
 
-# currency
+# currency tab
 tab_currency = ttk.Frame(tab_control)
 tab_control.add(tab_currency, text='Currency')
 lbl_currency = Label(tab_currency, text='Convert Currency', font=20, justify='center')
@@ -508,7 +480,7 @@ currency_combo2.place(relx=0.47, rely=0.2, anchor='nw')
 lbl_currencyeq = Label(tab_currency, text='=', font=("Calibri", 12), justify='center')
 lbl_currencyeq.place(relx=0.6, rely=0.2, anchor='nw')
 
-currency_calc_btn = Button(tab_currency, text="Calculate", command=calculate_currency)
+currency_calc_btn = Button(tab_currency, text="Calculate", command=convert_currency)
 currency_calc_btn.place(relx=0.4, rely=0.35, anchor='nw')
 
 currencyresults_entry = tk.Entry(tab_currency, width=13)
