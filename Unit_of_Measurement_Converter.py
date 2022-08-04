@@ -197,7 +197,7 @@ def calculate_currency(val, from_units, to_units, client):
     display_result(result, to_units, currencyresults_entry)
     print(recvData.decode('utf-8'))
 
-def getTempData():
+def get_temp_data():
     """Gets high temperature data for a given state by requesting data from Microservice."""
     data = state_combo.get()
     # set up communication via socket
@@ -306,7 +306,7 @@ tempData_entry.place(relx=0.7, rely=0.9, anchor='nw')
 tempData = ""
 tempData_entry.insert(0, tempData)
 
-temp_data_btn = Button(tab_temp, text="Get Data", command=getTempData, width=9)
+temp_data_btn = Button(tab_temp, text="Get Data", command=get_temp_data, width=9)
 temp_data_btn.place(relx=0.8, rely=0.9, anchor='nw')
 
 # pressure tab
